@@ -17,7 +17,7 @@ async function loadTemplates() {
   for (const file of files) {
     try {
       // { cache: 'no-store' } untuk memaksa browser mengambil file asli, bukan dari cache
-      const response = await fetch('./templates/' + file + '.html', { cache: 'no-store' });
+      const response = await fetch('templates/' + file + '.html', { cache: 'no-store' });
 
       if (!response.ok) {
         console.error('Template gagal dimuat:', file);

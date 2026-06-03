@@ -1,0 +1,50 @@
+<template id="tpl-order">
+    <div class="component-box">
+        <h3>Formulir Entri Pemesanan Bahan Ajar Baru</h3>
+        <div class="main-form">
+            <div class="form-group">
+                <label>Nomor Delivery Order (Otomatis):</label>
+                <input type="text" :value="generatedDoNumber" disabled class="input-disabled">
+            </div>
+            <div class="form-group">
+                <label><span class="required">*</span> NIM Mahasiswa:</label>
+                <input type="text" placeholder="Masukkan 9 digit NIM" v-model.trim="form.nim">
+            </div>
+            <div class="form-group">
+                <label><span class="required">*</span> Nama Lengkap:</label>
+                <input type="text" placeholder="Masukkan nama mahasiswa" v-model="form.nama">
+            </div>
+            <div class="form-group">
+                <label><span class="required">*</span> Ekspedisi Pengiriman:</label>
+                <select v-model="form.ekspedisi">
+                    <option value="">-- Pilih Kurir Ekslusif --</option>
+                    <option v-for="eks in ekspedisiList" :key="eks" :value="eks">{{ eks }}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label><span class="required">*</span> Pilih Paket Bahan Ajar:</label>
+                <select v-model="selectedPaketIndex">
+                    <option value="-1">-- Pilih Paket Bahan Ajar --</option>
+                    <option v-for="(pkt, idx) in paketList" :key="pkt.kode" :value="idx">
+                        {{ pkt.kode }} - {{ pkt.nama }}
+                    </option>
+                </select>
+            </div>
+            <div class="detail-box-pane" v-if="selectedPaket">
+                <h5>ℹ️ Informasi Detail Isi Paket:</h5>
+                <p class="isi-text">{{ selectedPaket.isi }}</p>
+                <div class="price-pane">
+                    <span>Harga Paket:</span>
+                    <strong class="price-tag">{{ selectedPaket.harga | formatCurrency }}</strong>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Tanggal Pengiriman:</label>
+                <input type="date" v-model="form.tanggalKirim">
+                <small class="hint">Kosongkan untuk otomatis mengisi dengan tanggal lokal hari ini.</small>
+            </div>
+            <p v-if="errorMsg" class="error-text">❌ {{ errorMsg }}</p>
+            <button class="btn btn-primary btn-block" @click="validateAndSubmit">Submit Transaksi Pemesanan</button>
+        </div>
+    </div>
+</template>

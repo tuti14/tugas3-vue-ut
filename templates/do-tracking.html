@@ -1,0 +1,56 @@
+<template id="tpl-tracking">
+    <div class="component-box">
+        <h3>Tracking Delivery Order (DO) Bahan Ajar</h3>
+        <div class="search-card">
+            <div class="search-input-wrapper">
+                <input type="text" placeholder="Cari berdasarkan Nomor DO atau NIM... (Tekan Enter untuk cari, Esc untuk reset)" v-model="searchQuery" @keyup.enter="executeSearch" @keyup.esc="resetSearch">
+                <button class="btn btn-primary" @click="executeSearch">Cari</button>
+                <button class="btn btn-secondary" @click="resetSearch">Reset</button>
+            </div>
+            <p class="hint-text">Status pencarian aktif: <strong>"{{ activeSearch || 'Semua Data' }}"</strong></p>
+        </div>
+        <div v-for="doItem in searchedList" :key="doItem.nomorDO" class="do-card">
+            <div class="do-card-header">
+                <h4>📦 {{ doItem.nomorDO }}</h4>
+                <span class="do-date">{{ doItem.tanggalKirim | formatLocalDate }}</span>
+            </div>
+            <div class="do-card-body">
+                <div class="info-grid">
+                    <div><label>NIM Penerima:</label>
+                        <p>{{ doItem.nim }}</p>
+                    </div>
+                    <div><label>Nama Penerima:</label>
+                        <p>{{ doItem.nama }}</p>
+                    </div>
+                    <div><label>Ekspedisi:</label>
+                        <p>{{ doItem.ekspedisi }}</p>
+                    </div>
+                    <div><label>Paket Pilihan:</label>
+                        <p><strong>{{ doItem.kodePaket }}</strong> - {{ doItem.namaPaket }}</p>
+                    </div>
+                    <div class="full-width"><label>Isi Paket:</label>
+                        <p class="isi-paket-text">{{ doItem.detailIsi }}</p>
+                    </div>
+                    <div><label>Total Harga:</label>
+                        <p class="price-text">{{ doItem.totalHarga | formatCurrency }}</p>
+                    </div>
+                </div>
+                <hr class="divider">
+                <h5>Log Perjalanan Logistik</h5>
+                <ul class="timeline">
+                    <li v-for="(log, idx) in doItem.progress" :key="idx">
+                        <span class="time">{{ log.waktu }}</span>
+                        <span class="desc">{{ log.keterangan }}</span>
+                    </li>
+                </ul>
+                <div class="add-progress-box">
+                    <input type="text" placeholder="Masukkan update keterangan logistik baru..." v-model="newProgressText[doItem.nomorDO]" @keyup.enter="submitProgress(doItem.nomorDO)">
+                    <button class="btn btn-sm btn-primary" @click="submitProgress(doItem.nomorDO)">Update Log</button>
+                </div>
+            </div>
+        </div>
+        <div v-if="searchedList.length === 0" class="empty-card">
+            <p>Tidak ada data Delivery Order yang sesuai dengan parameter pencarian.</p>
+        </div>
+    </div>
+</template>

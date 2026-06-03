@@ -1,0 +1,16 @@
+<template id="tpl-modal">
+    <div class="modal-overlay" v-if="visible">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h4>Konfirmasi Tindakan</h4>
+            </div>
+            <div class="modal-body">
+                <p>{{ message }}</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @click="decline">Batal</button>
+                <button class="btn btn-danger" @click="confirm">Ya, Hapus</button>
+            </div>
+        </div>
+    </div>
+</template>

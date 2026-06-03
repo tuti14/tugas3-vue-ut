@@ -1,0 +1,135 @@
+<template id="tpl-stock">
+    <div class="component-box">
+        <h3>Daftar Stok Bahan Ajar Seluruh UT Daerah</h3>
+
+        <div class="filter-card">
+            <div class="filter-group">
+                <label>UT-Daerah:</label>
+                <select v-model="filters.upbjj" @change="handleUpbjjChange">
+                    <option value="">-- Semua UT Daerah --</option>
+                    <option v-for="upbjj in upbjjList" :key="upbjj.id" :value="upbjj.nama">{{ upbjj.nama }}</option>
+                </select>
+            </div>
+            <div class="filter-group" v-if="filters.upbjj">
+                <label>Kategori Mata Kuliah:</label>
+                <select v-model="filters.kategori">
+                    <option value="">-- Semua Kategori --</option>
+                    <option v-for="cat in availableCategories" :key="cat" :value="cat">{{ cat }}</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Urutkan Berdasarkan:</label>
+                <select v-model="sortBy">
+                    <option value="judul">Judul Mata Kuliah</option>
+                    <option value="qty">Jumlah Stok</option>
+                    <option value="harga">Harga</option>
+                </select>
+            </div>
+            <div class="filter-group check-group">
+                <input type="checkbox" id="chkReorder" v-model="filters.needReorder">
+                <label for="chkReorder" class="label-inline">Butuh Re-order (Stok &le; Safety / Kosong)</label>
+            </div>
+            <button class="btn btn-secondary" @click="resetFilters">Reset Filter</button>
+        </div>
+
+        <div class="form-mini-card">
+            <h4>{{ isEditing ? 'Edit Data Bahan Ajar' : 'Tambah Data Bahan Ajar Baru' }}</h4>
+            <div class="mini-form-grid">
+                <div class="mini-form-group">
+                    <label>Kode MK</label>
+                    <input type="text" placeholder="Kode MK" v-model="form.kode" @keyup.enter="submitForm">  
+                </div>
+
+                <div class="mini-form-group">
+                    <label>Judul MK</label>
+                    <input type="text" placeholder="Judul Mata Kuliah" v-model="form.judul" @keyup.enter="submitForm">
+                </div>
+
+                <div class="mini-form-group">
+                    <label>Kategori</label>
+                    <input type="text" placeholder="Kategori" v-model="form.kategori" @keyup.enter="submitForm">
+                </div>
+
+                <div class="mini-form-group">
+                    <label>UT Daerah</label>
+                    <select v-model="form.upbjj" @keyup.enter="submitForm">
+                        <option value="">-- Pilih UT Daerah --</option>
+                        <option v-for="upbjj in upbjjList" :key="upbjj.id" :value="upbjj.nama">{{ upbjj.nama }}</option>
+                    </select>
+                </div>
+
+                <div class="mini-form-group">
+                    <label>Lokasi Rak</label>
+                    <input type="text" placeholder="Lokasi Rak" v-model="form.lokasiRak" @keyup.enter="submitForm">
+                </div>
+
+                <div class="mini-form-group">
+                    <label>Harga</label>
+                    <input type="number" placeholder="Harga" v-model.number="form.harga" @keyup.enter="submitForm">
+                </div>
+
+                <div class="mini-form-group">
+                    <label>Jumlah Stok</label>
+                    <input type="number" placeholder="Jumlah Stok (Qty)" v-model.number="form.qty" @keyup.enter="submitForm">
+                </div>
+
+                <div class="mini-form-group">
+                    <label>Jumlah Safety Stok</label>
+                    <input type="number" placeholder="Safety Stock" v-model.number="form.safety" @keyup.enter="submitForm">
+                </div>
+            </div>
+
+            <p v-if="errorMsg" class="error-text">{{ errorMsg }}</p>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" @click="submitForm">
+                    {{ isEditing ? 'Simpan Perubahan' : 'Simpan Data' }}
+                </button>
+                <button v-if="isEditing" class="btn btn-secondary" @click="cancelEdit">Batal</button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama MK</th>
+                        <th>Kategori</th>
+                        <th>UT Daerah</th>
+                        <th>Lokasi Rak</th>
+                        <th>Harga</th>
+                        <th>Jumlah Stok</th>
+                        <th>Safety Stock</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in filteredAndSortedItems" :key="item.id">
+                        <td><strong>{{ item.kode }}</strong></td>
+                        <td>{{ item.judul }}</td>
+                        <td>{{ item.kategori }}</td>
+                        <td>{{ item.upbjj }}</td>
+                        <td><span class="badge-rak">{{ item.lokasiRak }}</span></td>
+                        <td>{{ item.harga | formatCurrency }}</td> 
+                        <td>{{ item.qty | formatQty }}</td>
+                        <td>{{ item.safety | formatQty }}</td>
+                        <td class="td-status" @mouseenter="hoveredId = item.id" @mouseleave="hoveredId = null">
+                            <status-badge :qty="item.qty" :safety="item.safety"></status-badge>
+                            <div class="tooltip-box" v-if="hoveredId === item.id && item.catatanHTML" v-html="item.catatanHTML"></div>
+                        </td>
+                        <td>
+                            <button class="btn-icon btn-edit" title="Edit Data" @click="startEdit(item)">✏️</button>
+                            <button class="btn-icon btn-delete" title="Hapus Data" @click="$emit('delete-item', item.id)">❌</button>
+                        </td>
+                    </tr>
+                    <tr v-if="filteredAndSortedItems.length === 0">
+                        <td colspan="9" class="text-center">Data bahan ajar tidak ditemukan atau tidak cocok dengan filter.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</template>

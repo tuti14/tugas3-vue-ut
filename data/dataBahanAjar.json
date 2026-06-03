@@ -1,0 +1,82 @@
+{
+  "upbjjList": [
+    {"id": "UT-JKT", "nama": "UT Jakarta"},
+    {"id": "UT-BDG", "nama": "UT Bandung"},
+    {"id": "UT-YOG", "nama": "UT Yogyakarta"},
+    {"id": "UT-SBY", "nama": "UT Surabaya"}
+  ],
+  "ekspedisiList": [
+    "JNE Regular",
+    "JNE Express"
+  ],
+  "paketList": [
+    {
+      "kode": "PKT-001",
+      "nama": "Paket Bahan Ajar Dasar",
+      "harga": 450000,
+      "isi": "Modul MKDU4110, Modul MKWI4201, Modul BING4101"
+    },
+    {
+      "kode": "PKT-002",
+      "nama": "Paket Bahan Ajar Inti SI",
+      "harga": 750000,
+      "isi": "Modul MSIM4101, Modul MSIM4201, Modul MSIM4303"
+    }
+  ],
+  "stokBahanAjar": [
+    {
+      "id": 1,
+      "kode": "MSIM4303",
+      "judul": "Rekayasa Perangkat Lunak",
+      "kategori": "Sistem Informasi",
+      "upbjj": "UT Jakarta",
+      "lokasiRak": "A-12",
+      "harga": 85000,
+      "qty": 50,
+      "safety": 15,
+      "catatanHTML": "<p><strong>Saran Distribusi:</strong> Prioritaskan pengiriman via jalur darat untuk menghemat biaya operational.</p>"
+    },
+    {
+      "id": 2,
+      "kode": "MSIM4201",
+      "judul": "Struktur Data",
+      "kategori": "Sistem Informasi",
+      "upbjj": "UT Bandung",
+      "lokasiRak": "B-03",
+      "harga": 90000,
+      "qty": 8,
+      "safety": 10,
+      "catatanHTML": "<p><strong>Peringatan Restock:</strong> Sisa stok di bawah batas safety! Segera buat pengajuan cetak ulang ke pusat.</p>"
+    },
+    {
+      "id": 3,
+      "kode": "MKDU4110",
+      "judul": "Bahasa Indonesia",
+      "kategori": "MKDU",
+      "upbjj": "UT Yogyakarta",
+      "lokasiRak": "C-01",
+      "harga": 45000,
+      "qty": 0,
+      "safety": 20,
+      "catatanHTML": "<p><strong>Status Kritis:</strong> Stok kosong total. Banyak mahasiswa belum mendapatkan modul semester ini.</p>"
+    }
+  ],
+  "trackingDO": [
+    {
+      "nomorDO": "DO2026-001",
+      "nim": "041234567",
+      "nama": "Ahmad Fauzi",
+      "ekspedisi": "JNE Express",
+      "kodePaket": "PKT-002",
+      "namaPaket": "Paket Bahan Ajar Inti SI",
+      "detailIsi": "Modul MSIM4101, Modul MSIM4201, Modul MSIM4303",
+      "tanggalKirim": "2026-05-10",
+      "totalHarga": 750000,
+      "progress": [
+        {"waktu": "2026-05-10 09:00", "keterangan": "DO Berhasil Dibuat di Sistem SITTA UT."},
+        {"waktu": "2026-05-10 14:00", "keterangan": "Paket diserahkan ke kurir JNE Express."},
+        {"waktu": "2026-05-11 10:30", "keterangan": "Paket telah diterima oleh yang bersangkutan."}
+      ]
+    }
+  ]
+}

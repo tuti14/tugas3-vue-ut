@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SITTA UT - Sistem Pemesanan Bahan Ajar</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Niramit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Style CSS Global -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body>
+
+  <div id="app">
+    <header class="app-header">
+      <h2>SITTA Universitas Terbuka</h2>
+      <p>Sistem Kebutuhan Proses Pemesanan dan Distribusi Bahan Ajar</p>
+    </header>
+
+    <nav class="app-nav">
+      <button :class="{ active: tab === 'stok' }" @click="tab = 'stok'">Manajemen Stok</button>
+      <button :class="{ active: tab === 'tracking' }" @click="tab = 'tracking'">Tracking DO</button>
+      <button :class="{ active: tab === 'order' }" @click="tab = 'order'">Form Pemesanan</button>
+    </nav>
+
+    <main class="app-content">
+      
+      <section v-show="tab === 'stok'">
+        <ba-stock-table 
+          :items="state.stokBahanAjar" 
+          :upbjj-list="state.upbjjList"
+          @add-item="handleAddItem"
+          @update-item="handleUpdateItem"
+          @delete-item="handleDeleteItem">
+        </ba-stock-table>
+      </section>
+
+      <section v-show="tab === 'tracking'">
+        <do-tracking 
+          :tracking-list="state.trackingDO"
+          @add-status-progress="handleAddStatusProgress">
+        </do-tracking>
+      </section>
+
+      <section v-show="tab === 'order'">
+        <order-form 
+          :paket-list="state.paketList" 
+          :ekspedisi-list="state.ekspedisiList"
+          :tracking-list="state.trackingDO"
+          @submit-order="handleCreateNewDO">
+        </order-form>
+      </section>
+
+    </main>
+
+    <app-modal ref="modal"></app-modal>
+    
+    <footer class="app-footer">
+      <p>&copy; 2026 SITTA Universitas Terbuka</p>
+    </footer>
+  </div>
+
+  <div id="template-container" style="display: none;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  
+  <script src="/js/services/template-loader.js"></script>
+
+  <script src="/js/services/api.js"></script>
+  
+  <script src="/js/components/stock-table.js"></script>
+  <script src="/js/components/status-badge.js"></script>
+  <script src="/js/components/do-tracking.js"></script>
+  <script src="/js/components/order-form.js"></script>
+  <script src="/js/components/app-modal.js"></script>
+  
+  <script src="/js/app.js"></script>
+
+</body>
+</html>
